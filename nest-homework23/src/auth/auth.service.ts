@@ -34,7 +34,7 @@ export class AuthService {
 
     const isPassEqual = await bcrypt.compare(password, existUser.password);
     if (!isPassEqual)
-      throw new BadRequestException('emailor password is invalid');
+      throw new BadRequestException('email or password is invalid');
 
     const payLoad = {
       userId: existUser._id,

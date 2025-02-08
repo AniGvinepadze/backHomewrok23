@@ -5,9 +5,10 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { IsAuthGuard } from 'src/auth/auth.guard';
 import { Subscription } from 'src/users/subscription.decorator';
 import { RoleGuard } from 'src/guards/role.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
-
-@Controller('posts')
+@ApiBearerAuth()
+@Controller('posts') 
 @UseGuards(IsAuthGuard)
 export class PostsController {
   constructor(private readonly postsService: PostsService) {}
