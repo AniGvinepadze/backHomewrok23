@@ -15,6 +15,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { IsAuthGuard } from 'src/auth/auth.guard';
 import { Role } from './role.decorator';
 import { RoleGuard } from 'src/guards/role.guard';
+import { Subscribtion } from 'src/enums/subscription.enum';
+import { Subscription } from './subscription.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -36,18 +38,35 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UseGuards(IsAuthGuard,RoleGuard)
+  @UseGuards(IsAuthGuard, RoleGuard)
   update(
     @Role() role,
     @Req() req,
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(role,req.userId, id, updateUserDto);
+    return this.usersService.update(role, req.userId, id, updateUserDto);
   }
 
+  @UseGuards(IsAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(IsAuthGuard, RoleGuard)
+  updateSubscription(
+    @Role() role,
+    @Req() req,
+    @Param('id') id: string,
+    @Subscription() subscription,
+  ) {
+    return this.usersService.updateSubscription(
+      role,
+      req.userId,
+      id,
+      subscription,
+    );
   }
 }

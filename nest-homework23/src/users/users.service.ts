@@ -43,11 +43,14 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
   ) {
     console.log(role, 'roleeeeeee');
-    console.log(tokenId,"tokenIddd")
+    console.log(tokenId, 'tokenIddd');
     if (tokenId !== id && role !== 'admin')
       throw new UnauthorizedException('permition denied');
     if (!isValidObjectId(id))
       throw new BadRequestException('invalid id provided');
+    if (role && role !== 'admin') {
+      throw new UnauthorizedException('Only admin can update roles');
+    }
     const updatedUser = await this.userModel.findByIdAndUpdate(
       id,
       updateUserDto,
@@ -65,5 +68,25 @@ export class UsersService {
     if (!deletedUser)
       throw new BadRequestException('user could not be deleted');
     return deletedUser;
+  }
+
+  async updateSubscription(
+    role: string,
+    tokenId: string,
+    id: string,
+    subscription: string,
+  ) {
+    if (tokenId !== id && role !== 'admin')
+      throw new UnauthorizedException('Permission denied');
+
+    if (!isValidObjectId(id))
+      throw new BadRequestException('Invalid ID provided');
+
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    user.subscriptionPlan = subscription;
+
+    return user;
   }
 }

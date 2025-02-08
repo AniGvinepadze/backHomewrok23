@@ -4,6 +4,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { IsAuthGuard } from 'src/auth/auth.guard';
 import { Subscription } from 'src/users/subscription.decorator';
+import { RoleGuard } from 'src/guards/role.guard';
 
 
 @Controller('posts')
@@ -27,12 +28,12 @@ export class PostsController {
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(id);
   }
-
+  @UseGuards(RoleGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     return this.postsService.update(id, updatePostDto);
   }
-
+  @UseGuards(RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.postsService.remove(id);
