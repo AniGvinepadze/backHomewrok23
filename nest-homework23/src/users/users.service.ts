@@ -12,7 +12,10 @@ import { User } from './schema/user.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('user') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('user') private userModel: Model<User>,
+    
+) {}
   async create(createUserDto: CreateUserDto) {
     const existUser = await this.userModel.findOne({
       email: createUserDto.email,
