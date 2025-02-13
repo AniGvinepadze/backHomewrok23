@@ -9,13 +9,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { isValidObjectId, Model } from 'mongoose';
 import { User } from './schema/user.schema';
+import { AwsS3Service } from 'src/aws-s3/aws-s3.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel('user') private userModel: Model<User>,
-    
-) {}
+    private s3Service: AwsS3Service,
+  ) {}
   async create(createUserDto: CreateUserDto) {
     const existUser = await this.userModel.findOne({
       email: createUserDto.email,
@@ -91,5 +92,15 @@ export class UsersService {
     user.subscriptionPlan = subscription;
 
     return user;
+  }
+
+  uploadFile(filePath, file) {
+    return this.s3Service.uploadFile(filePath, file);
+  }
+  getFile(fileId) {
+    return this.s3Service.getFileById(fileId);
+  }
+  deleteFileById(fileId){
+    return this.s3Service.deleteByuId(fileId)
   }
 }

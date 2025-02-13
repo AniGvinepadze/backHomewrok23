@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,6 +19,8 @@ import { Role } from './role.decorator';
 import { RoleGuard } from 'src/guards/role.guard';
 import { Subscribtion } from 'src/enums/subscription.enum';
 import { Subscription } from './subscription.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CLIENT_RENEG_LIMIT } from 'tls';
 
 @Controller('users')
 export class UsersController {
@@ -68,5 +72,28 @@ export class UsersController {
       id,
       subscription,
     );
+  }
+
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const path = Math.random().toString().slice(2);
+    console.log(path, 'path');
+    // const type = file.mimetype.split('/')[1];
+    const filePath = `images/${path}`;
+    console.log(filePath, 'filePath');
+    console.log(file, 'file');
+    return this.usersService.uploadFile(filePath, file);
+  }
+
+  @Post('getFile')
+  getFileById(@Body('fileId') fileId) {
+    // console.log(fileId, 'filkeUd');
+    return this.usersService.getFile(fileId);
+  }
+
+  @Post('deleteFile')
+  deleteFileById(@Body('fileId') fileId) {
+    return this.usersService.deleteFileById(fileId);
   }
 }
